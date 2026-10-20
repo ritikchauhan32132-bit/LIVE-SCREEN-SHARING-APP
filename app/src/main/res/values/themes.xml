@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <style name="Theme.RitikSC" parent="android:Theme.Material.NoActionBar">
+        <item name="android:statusBarColor">@color/ritik_background</item>
+        <item name="android:navigationBarColor">@color/ritik_background</item>
+        <item name="android:windowBackground">@color/ritik_background</item>
+    </style>
+
+    <style name="Theme.RitikSC.Splash" parent="Theme.RitikSC">
+        <item name="android:windowBackground">@color/ritik_splash_bg</item>
+    </style>
+</resources>

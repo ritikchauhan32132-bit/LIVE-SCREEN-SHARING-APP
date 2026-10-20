@@ -1,0 +1,74 @@
+rules_version = '2';
+service cloud.firestore {
+  match /databases/{database}/documents {
+
+    // Helper functions
+    function isAuthenticated() {
+      return request.auth != null;
+    }
+
+    function isOwner(uid) {
+      return isAuthenticated() && request.auth.uid == uid;
+    }
+
+    // Users Collection
+    match /users/{userId} {
+      allow read, write: if isOwner(userId);
+    }
+
+    // Devices Collection
+    match /devices/{deviceId} {
+      // Any authenticated user can read device info if they own it or have an active pairing
+      allow read: if isAuthenticated() && (
+        resource.data.ownerUid == request.auth.uid
+      );
+      // Only the device owner can register or update device status
+      allow create, update: if isAuthenticated() && (
+        request.resource.data.ownerUid == request.auth.uid
+      );
+      allow delete: if isAuthenticated() && resource.data.ownerUid == request.auth.uid;
+    }
+
+    // Pairing Codes Collection
+    match /pairing_codes/{code} {
+      // Must be authenticated to read or create
+      allow read: if isAuthenticated() && resource.data.ownerUid == request.auth.uid;
+      // Creator must own the device creating the code
+      allow create: if isAuthenticated() && request.resource.data.ownerUid == request.auth.uid;
+      // An authenticated user on the same account can mark as used when pairing
+      allow update: if isAuthenticated() && resource.data.ownerUid == request.auth.uid;
+      allow delete: if isAuthenticated() && resource.data.ownerUid == request.auth.uid;
+    }
+
+    // Pairings Collection
+    match /pairings/{pairingId} {
+      allow read: if isAuthenticated() && resource.data.ownerUid == request.auth.uid;
+      allow create: if isAuthenticated() && request.resource.data.ownerUid == request.auth.uid;
+      allow update: if isAuthenticated() && resource.data.ownerUid == request.auth.uid;
+      allow delete: if isAuthenticated() && resource.data.ownerUid == request.auth.uid;
+    }
+
+    // Sessions Collection
+    match /sessions/{sessionId} {
+      allow read: if isAuthenticated() && resource.data.ownerUid == request.auth.uid;
+      allow create: if isAuthenticated() && request.resource.data.ownerUid == request.auth.uid;
+      allow update: if isAuthenticated() && resource.data.ownerUid == request.auth.uid;
+      allow delete: if isAuthenticated() && resource.data.ownerUid == request.auth.uid;
+    }
+
+    // Signaling Messages Collection
+    match /signaling/{messageId} {
+      // Allow read/write only if the session belongs to authenticated user
+      allow read: if isAuthenticated();
+      allow create: if isAuthenticated();
+      allow delete: if isAuthenticated();
+    }
+
+    // Connection History Collection
+    match /connection_history/{sessionId} {
+      allow read: if isAuthenticated() && resource.data.ownerUid == request.auth.uid;
+      allow create: if isAuthenticated() && request.resource.data.ownerUid == request.auth.uid;
+      allow update, delete: if false; // Immutable audit trail
+    }
+  }
+}

@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <color name="ritik_primary">#FF2979FF</color>
+    <color name="ritik_primary_dark">#FF1565C0</color>
+    <color name="ritik_surface">#FF0D1117</color>
+    <color name="ritik_surface_variant">#FF161B22</color>
+    <color name="ritik_background">#FF010409</color>
+    <color name="ritik_on_surface">#FFE6EDF3</color>
+    <color name="ritik_accent">#FF58A6FF</color>
+    <color name="ritik_error">#FFFF6B6B</color>
+    <color name="ritik_success">#FF3FB950</color>
+    <color name="ritik_warning">#FFD29922</color>
+    <color name="ritik_splash_bg">#FF010409</color>
+</resources>
